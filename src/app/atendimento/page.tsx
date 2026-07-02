@@ -23,7 +23,7 @@ export default function AtendimentoPage() {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const { sendMessage } = useWebSocket()
+  
 
   const msgs = ticketAtivo ? (mensagens[ticketAtivo.conversaId] || []) : []
 
