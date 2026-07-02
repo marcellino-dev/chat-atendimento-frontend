@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { useChatStore } from '@/store/chatStore'
 import { useAuthStore } from '@/store/authStore'
-import { useWebSocket } from '@/hooks/useWebSocket'
 import { mensagemService } from '@/services/mensagemService'
 import { ticketService } from '@/services/ticketService'
 import { statusColor } from '@/lib/utils'
@@ -22,7 +21,6 @@ export function ChatWindow({ ticket, onClose }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const { mensagens, addMensagem, setMensagens } = useChatStore()
   const { user } = useAuthStore()
-  const { sendMessage } = useWebSocket()
   const msgs = mensagens[ticket.conversaId] || []
 
   useEffect(() => {
@@ -39,7 +37,8 @@ export function ChatWindow({ ticket, onClose }: Props) {
     if (!input.trim() || sending) return
     setSending(true)
     try {
-      sendMessage(ticket.conversaId, input.trim())
+      const msg = await mensagemService.enviar(ticket.conversaId, input.trim())
+      addMensagem(ticket.conversaId, msg)
       setInput('')
     } catch {
       toast.error('Erro ao enviar mensagem')
